@@ -1,0 +1,19 @@
+{
+  "name": "@mongez/user",
+  "version": "1.0.3",
+  "description": "A User Management tool for user auth and data management",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@mongez/events": "^1.0.x",
+    "@mongez/reinforcements": "^1.0.x"
+  },
+  "keywords": [
+    "user",
+    "management",
+    "auth",
+    "login",
+    "logout"
+  ],
+  "author": "hassanzohdy",
+  "license": "MIT"
+}

@@ -7,7 +7,7 @@ import {
 import events, { EventSubscription } from "@mongez/events";
 
 export default class UserEventsListener implements UserEvents {
-  public constructor(public name) {}
+  public constructor(public name: string) {}
 
   /**
    * {@inheritdoc}

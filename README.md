@@ -32,6 +32,9 @@ class User extends BaseUser implements UserInterface {
 
 const user: User = new User;
 
+// boot the class
+user.boot();
+
 export default user;
 ```
 
@@ -78,6 +81,9 @@ class User extends BaseUser implements UserInterface {
 }
 
 const user: User = new User;
+
+// boot the class
+user.boot();
 
 export default user;
 ```
@@ -369,6 +375,9 @@ class User extends BaseUser implements UserInterface {
 }
 
 const user: User = new User;
+
+// boot the class
+user.boot();
 
 // you can define any type of events listeners such onLogin
 user.events.onLogin((userData: any, user: UserInterface) => {

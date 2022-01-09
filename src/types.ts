@@ -46,7 +46,7 @@ export interface UserInterface extends UserInfo {
   /**
    * Log the user out
    */
-  logout();
+  logout(): void;
 
   /**
    * Get user access token
@@ -77,14 +77,14 @@ export interface UserInterface extends UserInfo {
    * @param   {string} key
    * @param   {any} value
    */
-  set(key: string, value: any);
+  set(key: string, value: any): void;
 
   /**
    * Reset user info excluding access token if not provided with the given data
    *
    * @param {object} newInfo
    */
-  update(newInfo: UserInfo);
+  update(newInfo: UserInfo): void;
 
   /**
    * Get value for the given key, otherwise return default value
@@ -98,7 +98,7 @@ export interface UserInterface extends UserInfo {
   /**
    * Set user permissions list
    */
-  setPermissions(permissions: object);
+  setPermissions(permissions: object): void;
 
   /**
    * Check if user has access to the given permission role
@@ -199,7 +199,7 @@ export type UserEvents = {
   /**
    * Trigger user data change, called when calling `update` method.
    */
-  triggerChange(newData: any, oldData: any, user: UserInterface);
+  triggerChange(newData: any, oldData: any, user: UserInterface): void;
 
   /**
    * Trigger key's value is changed , called when calling `set` method and the given value is not the same as current value of same key.

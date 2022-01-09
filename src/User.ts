@@ -11,7 +11,7 @@ export default class User implements UserInterface {
   /**
    * Cache driver
    */
-  protected cacheDriver: UserCacheDriverInterface;
+  protected cacheDriver!: UserCacheDriverInterface;
 
   /**
    * Permissions list
@@ -48,19 +48,12 @@ export default class User implements UserInterface {
    * Event base name
    * If not set and events are enabled, cache key will be used instead
    */
-  protected eventsBaseName: string;
+  protected eventsBaseName?: string;
 
   /**
    * Set user events list
    */
-  public events: UserEvents;
-
-  /**
-   * Constructor
-   */
-  public constructor() {
-    this.boot();
-  }
+  public events?: UserEvents;
 
   /**
    * Initialize the user

@@ -236,7 +236,7 @@ export type UserCacheDriverInterface = {
    */
   remove(key: string): void;
   /**
-   * Dynamic props
+   * Dynamic attributes and methods
    */
   [id: string]: any;
 };

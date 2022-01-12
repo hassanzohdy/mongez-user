@@ -1,6 +1,6 @@
 {
     "name": "@mongez/user",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "A User Management tool for user auth and data management",
     "main": "src/index.ts",
     "dependencies": {

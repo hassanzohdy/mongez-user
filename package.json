@@ -1,11 +1,11 @@
 {
     "name": "@mongez/user",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "A User Management tool for user auth and data management",
     "main": "src/index.ts",
     "dependencies": {
         "@mongez/events": "^1.0.x",
-        "@mongez/reinforcements": "^1.0.x"
+        "@mongez/reinforcements": "^2.x.x"
     },
     "repository": {
         "type": "git",

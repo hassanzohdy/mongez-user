@@ -1,11 +1,11 @@
-import { Obj } from "@mongez/reinforcements";
-import UserEventsListener from "./UserEventsListener";
+import { get, set } from "@mongez/reinforcements";
 import {
-  UserInfo,
-  UserInterface,
   UserCacheDriverInterface,
   UserEvents,
+  UserInfo,
+  UserInterface,
 } from "./types";
+import UserEventsListener from "./UserEventsListener";
 
 export default class User implements UserInterface {
   /**
@@ -149,7 +149,7 @@ export default class User implements UserInterface {
     const oldValue: any = this.get(key);
     if (value === oldValue) return;
 
-    Obj.set(this.userData, key, value);
+    set(this.userData, key, value);
 
     this.cacheDriver.set(this.getCacheKey(), this.userData);
 
@@ -189,7 +189,7 @@ export default class User implements UserInterface {
    * @returns {any}
    */
   public get(key: string, defaultValue: any = null) {
-    return Obj.get(this.userData, key, defaultValue);
+    return get(this.userData, key, defaultValue);
   }
 
   /**
@@ -256,7 +256,7 @@ export default class User implements UserInterface {
    * @returns {boolean}
    */
   public can(permission: string) {
-    return Boolean(Obj.get(this.permissions, permission)) === true;
+    return Boolean(get(this.permissions, permission)) === true;
   }
 
   /**

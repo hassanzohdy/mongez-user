@@ -1,6 +1,6 @@
-import User from "./User";
+import User from "./user-manager";
 
-let currentUser: User;
+let currentUser: User | undefined;
 
 /**
  * Set current User
@@ -14,8 +14,8 @@ export function setCurrentUser(user: User) {
 /**
  * Get current User
  *
- * @returns {User}
+ * @returns {User | undefined}
  */
-export function getCurrentUser(): User {
+export function getCurrentUser(): User | undefined {
   return currentUser;
 }

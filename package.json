@@ -1,23 +1,41 @@
 {
-    "name": "@mongez/user",
-    "version": "1.0.11",
-    "description": "A User Management tool for user auth and data management",
-    "main": "src/index.ts",
-    "dependencies": {
-        "@mongez/events": "^1.0.x",
-        "@mongez/reinforcements": "^2.x.x"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/hassanzohdy/mongez-user"
-    },
-    "keywords": [
-        "user",
-        "management",
-        "auth",
-        "login",
-        "logout"
-    ],
-    "author": "hassanzohdy",
-    "license": "MIT"
+  "name": "@mongez/user",
+  "version": "1.1.0",
+  "description": "Framework-agnostic user/auth state manager — login, logout, access tokens, permissions, and pluggable persistence with an event bus.",
+  "main": "src/index.ts",
+  "sideEffects": false,
+  "author": "hassanzohdy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hassanzohdy/mongez-user"
+  },
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@mongez/events": "^2.1.0",
+    "@mongez/reinforcements": "^2.3.6"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^2.1.0"
+  },
+  "keywords": [
+    "user",
+    "auth",
+    "authentication",
+    "authorization",
+    "session",
+    "login",
+    "logout",
+    "access-token",
+    "permissions",
+    "rbac",
+    "state-management",
+    "framework-agnostic",
+    "browser",
+    "node"
+  ]
 }

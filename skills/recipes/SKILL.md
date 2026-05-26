@@ -1,7 +1,9 @@
 ---
 name: mongez-user-recipes
-description: End-to-end composition patterns for common @mongez/user scenarios — browser auth, login with side effects, token attachment, refresh on 401, SSR per-request isolation, and multiple user types.
-when_to_use: User needs a complete working example of @mongez/user — setting up a browser app, wiring a login flow, auto-attaching tokens to fetch, handling 401 refresh, using per-request isolation in Node, or running multiple user subclasses.
+description: |
+  End-to-end composition patterns for common `@mongez/user` scenarios — browser auth, login with side effects, token attachment, refresh on 401, SSR per-request isolation, and multiple user types.
+  TRIGGER when: code wires `User`, `setCurrentUser`, `getCurrentUser`, `refreshToken`, and a `cacheDriver` together in one flow; user asks "how do I set up @mongez/user from scratch / auto-attach the bearer token / refresh on 401 / handle SSR / run admin and customer users side by side / hook login to analytics"; file builds a fetch wrapper around `getCurrentUser()?.getAccessToken()`.
+  SKIP: focused single-feature questions (use `mongez-user-user-manager`, `mongez-user-cache-drivers`, `mongez-user-events`, or `mongez-user-permissions` instead); third-party OAuth flows (NextAuth, Auth.js, Auth0 SDK); raw fetch/axios interceptor recipes without a `User` instance.
 ---
 
 # Recipes

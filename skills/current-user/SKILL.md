@@ -1,7 +1,9 @@
 ---
 name: mongez-user-current-user
-description: How to use the module-level current user pointer (setCurrentUser / getCurrentUser) for cross-module access to the logged-in user.
-when_to_use: User calls setCurrentUser or getCurrentUser, needs shared access to the user instance from middleware or generic helpers, or is debugging SSR/test isolation issues with the global slot.
+description: |
+  How to use the module-level current user pointer (`setCurrentUser` / `getCurrentUser`) for cross-module access to the logged-in user.
+  TRIGGER when: code imports `setCurrentUser` or `getCurrentUser` from `@mongez/user`; user asks "how do I access the current user from anywhere / get the logged-in user in middleware / share user across modules"; file calls `getCurrentUser()?.getAccessToken()` or sets the global slot after `boot()`; `import { setCurrentUser, getCurrentUser } from "@mongez/user"`.
+  SKIP: @mongez/atom for app-wide reactive state beyond a single global slot; React Context / Redux-style stores; per-request SSR user threading (use request context instead — see `mongez-user-recipes`).
 ---
 
 # Current User Pointer

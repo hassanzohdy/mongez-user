@@ -39,6 +39,9 @@ import {
 
 ## The base class
 
+> **Auto-trigger:** code extends `User` (`class AppUser extends BaseUser`) or calls `user.boot()`, `user.login(...)`, `user.logout()`, `user.update(...)`, `user.get(...)`, `user.set(...)`, `user.all()`, `user.isLoggedIn()`, `user.isNotLoggedIn()`, `user.getAccessToken()`, `user.setAccessToken(...)`, `user.refreshToken(...)`, `user.getCacheKey()`, `user.getAccessTokenKey()`, or `user.setAccessTokenKey(...)`; sets `protected cacheDriver`, `cacheKey`, `accessTokenKey`, `enableEvents`, or `eventsBaseName` on a subclass; user asks "how do I subclass User / log in a user / read user fields / change the token key / preserve token on update"; `import { User } from "@mongez/user"`.
+> **Skip when:** cache driver implementation details (use `mongez-user-cache-drivers`); event subscriptions (use `mongez-user-events`); permission checks (use `mongez-user-permissions`); module-level current user (use `mongez-user-current-user`).
+
 The pattern is: subclass, declare a `cacheDriver` field, optionally override `accessTokenKey`, `cacheKey`, `enableEvents`, `eventsBaseName`. Then `new` it and call `boot()`.
 
 ```ts
@@ -126,6 +129,9 @@ user.setAccessTokenKey("jwt");   // change it at runtime
 
 ## Cache drivers
 
+> **Auto-trigger:** code references `UserCacheDriverInterface`, `cacheDriver`, or assigns to `protected cacheDriver` on a `User` subclass; user asks "how do I persist the user / store auth in localStorage / use cookies for auth / write a cache driver for @mongez/user"; file imports `UserCacheDriverInterface` from `@mongez/user` or wires a `get`/`set`/`remove` driver to a `User` class.
+> **Skip when:** @mongez/cache for general-purpose caching unrelated to user/session state; storage primitives unrelated to `@mongez/user` (e.g. plain `localStorage.setItem` calls with no `User` subclass); SSR session middleware that doesn't use the `User` class.
+
 ```ts
 type UserCacheDriverInterface = {
   get(key: string, defaultValue?: any): any;
@@ -171,6 +177,9 @@ function memoryDriver(): UserCacheDriverInterface {
 
 ## Events
 
+> **Auto-trigger:** code sets `enableEvents = true` or `eventsBaseName` on a `User` subclass; calls `user.events.onLogin`, `onLogout`, `onChange`, `onKeyChange`, `onBoot`, or uses `UserEventsListener`; user asks "how do I react to login / fire side effects on logout / subscribe to auth events / invalidate caches on logout"; subscribes to `events.subscribe("auth.login", ...)` topics from `@mongez/events`.
+> **Skip when:** @mongez/events for generic app-wide pub/sub unrelated to auth lifecycle; DOM `addEventListener`; framework state-change hooks (e.g. React effect deps); pure component re-render concerns.
+
 Off by default. Set `protected enableEvents = true` on your subclass.
 
 ```ts
@@ -203,6 +212,9 @@ All return `EventSubscription` from `@mongez/events`. Call `.unsubscribe()` to r
 Events are dispatched on the `@mongez/events` bus under `${eventsBaseName}.${eventType}`. You can subscribe directly with `events.subscribe("auth.login", cb)` from anywhere.
 
 ## Current user pointer
+
+> **Auto-trigger:** code imports `setCurrentUser` or `getCurrentUser` from `@mongez/user`; user asks "how do I access the current user from anywhere / get the logged-in user in middleware / share user across modules"; file calls `getCurrentUser()?.getAccessToken()` or sets the global slot after `boot()`; `import { setCurrentUser, getCurrentUser } from "@mongez/user"`.
+> **Skip when:** @mongez/atom for app-wide reactive state beyond a single global slot; React Context / Redux-style stores; per-request SSR user threading (use request context instead — see `mongez-user-recipes`).
 
 ```ts
 import { setCurrentUser, getCurrentUser } from "@mongez/user";

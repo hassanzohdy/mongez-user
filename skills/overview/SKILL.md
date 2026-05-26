@@ -1,7 +1,9 @@
 ---
 name: mongez-user-overview
-description: High-level architecture of @mongez/user — class hierarchy, mental model, scope boundaries, and install.
-when_to_use: User is new to @mongez/user and needs to understand what it does, how its pieces fit together, or what it does NOT handle (network, storage primitives, reactive state).
+description: |
+  High-level architecture of `@mongez/user` — class hierarchy, mental model, scope boundaries, and install.
+  TRIGGER when: code imports `User`, `UserEventsListener`, `setCurrentUser`, `getCurrentUser`, or types `UserInterface`, `UserInfo`, `UserCacheDriverInterface`, `UserEvents` from `@mongez/user`; user asks "what is @mongez/user / how does it fit together / does it have a React hook / how do I get started"; file shows `import { User } from "@mongez/user"` as a first introduction.
+  SKIP: NextAuth, Auth0 SDK, Clerk, Firebase Auth, or any third-party auth provider; raw JWT decoding libraries (`jsonwebtoken`, `jose`); React-specific auth context wrappers without the `User` base class.
 ---
 
 # Overview

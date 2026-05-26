@@ -129,4 +129,4 @@ The same pattern works for any framework with effect hooks.
 
 ## Caveats
 
-- `onBoot`, `onLogout`, and `onKeyChange` currently wire to the `logout` topic internally — this is a bug in `user-events-listener.ts`. See `src/__tests__/events.test.ts` for the skipped regression test that documents the issue. Use `events.subscribe()` directly against the right topic name as a workaround.
+- Topic listeners only fire for managers that share the same global `events` bus. If you instantiate a `User` subclass with a per-instance event bus, the convenience `onBoot`/`onLogin`/`onLogout`/`onKeyChange` helpers still subscribe to the global bus — wire them on your per-instance bus directly with `events.subscribe(...)` if you've forked the bus.

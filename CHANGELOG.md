@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.1.6] — 2026-05-26
 
 ### Added
 
@@ -23,11 +23,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `User.update()` now emits the correct previous value as `oldValue` to `keyChange` listeners. Previously `this.userData` was reassigned before the per-key loop ran, so `this.get(key)` inside the loop returned the new value, making `oldValue` identical to `newValue`. The previous data is now captured before the assignment and indexed inside the loop. (`src/user-manager.ts:170-174`)
 - `User.update()` no longer mutates the caller's `userData` argument. The input is now cloned at the top of the method, so writing the preserved access token back is done on the clone rather than the caller's object. (`src/user-manager.ts:163`)
 
-### Changed (type-only break, runtime unchanged)
+### Changed
 
 - `getCurrentUser()` now returns `User | undefined` instead of `User`. The runtime always returned `undefined` before `setCurrentUser` was called; the type now reflects that. Consumers must handle the undefined case (e.g. `getCurrentUser()?.isLoggedIn()` or an `if (user)` guard). (`src/current-user.ts:3,19`)
-
-### Notes
-
-- Public method signatures on `UserManager` are unchanged. Public function signatures of `onBoot` / `onKeyChange` / etc. are unchanged. The only signature change is the return type of `getCurrentUser`, documented above.
-- No runtime dependencies were added.

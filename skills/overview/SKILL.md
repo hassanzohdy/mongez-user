@@ -1,37 +1,54 @@
 ---
 name: mongez-user-overview
 description: |
-  High-level architecture of `@mongez/user` — class hierarchy, mental model, scope boundaries, and install.
-  TRIGGER when: code imports `User`, `UserEventsListener`, `setCurrentUser`, `getCurrentUser`, or types `UserInterface`, `UserInfo`, `UserCacheDriverInterface`, `UserEvents` from `@mongez/user`; user asks "what is @mongez/user / how does it fit together / does it have a React hook / how do I get started"; file shows `import { User } from "@mongez/user"` as a first introduction.
-  SKIP: NextAuth, Auth0 SDK, Clerk, Firebase Auth, or any third-party auth provider; raw JWT decoding libraries (`jsonwebtoken`, `jose`); React-specific auth context wrappers without the `User` base class.
+  @mongez/user — framework-agnostic auth/session primitive. Subclass User, plug a cache driver, call login/logout/can/get/set methods. Browser and Node. Class-based, no React adapter.
 ---
 
-# Overview
+# @mongez/user — Overview
 
-`@mongez/user` is a framework-agnostic auth/session primitive. It gives you a `User` base class you subclass, plug a cache driver into, and call methods on (`login`, `logout`, `get`, `set`, `can`). It runs in the browser and on Node.
+A framework-agnostic auth/session primitive. Subclass `User`, plug in a cache driver, then read and write the session through bound methods (`login`, `logout`, `get`, `set`, `can`). Class-based — each instance owns its `userData`, permissions, and (optional) event listener. There's no React adapter and no global store; for cross-module access to "the current user", use the module-level `getCurrentUser` pointer.
 
-The state model is class-based — a concrete user object holds its own `userData`, its own permissions, and (optionally) its own event listener. There is no React adapter and no global store; if you need cross-module access to "the current user" there's a single module-level pointer (`getCurrentUser`).
+## Highlighted features
 
-For app-wide state beyond auth, reach for [`@mongez/atom`](https://github.com/hassanzohdy/mongez-atom). For typed events, [`@mongez/events`](https://github.com/hassanzohdy/events) — which this package uses internally.
+<div class="mongez-highlights">
+
+<div class="mongez-highlight" data-accent="ice">
+  <svg class="mongez-highlight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  <h3>Subclass <code>User</code></h3>
+  <p>Inherit from <code>User</code>, declare your <code>cacheDriver</code> + optional overrides. Methods (<code>login</code>, <code>logout</code>, <code>can</code>) come free.</p>
+</div>
+
+<div class="mongez-highlight" data-accent="ice">
+  <svg class="mongez-highlight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+  <h3>Pluggable storage</h3>
+  <p>Cache driver is a 3-method interface (<code>get</code>, <code>set</code>, <code>remove</code>). Cookies, localStorage, IndexedDB, <code>@mongez/cache</code> — your choice.</p>
+</div>
+
+<div class="mongez-highlight" data-accent="fire">
+  <svg class="mongez-highlight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  <h3>Dot-notation permissions</h3>
+  <p><code>user.can("posts.create")</code> reads nested permission trees. Set the whole tree with <code>setPermissions</code>, query with paths.</p>
+</div>
+
+<div class="mongez-highlight" data-accent="bolt">
+  <svg class="mongez-highlight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><line x1="14.5" y1="9.5" x2="17.5" y2="6.5"/><line x1="6.5" y1="17.5" x2="9.5" y2="14.5"/></svg>
+  <h3>Lifecycle events</h3>
+  <p><code>boot</code>, <code>login</code>, <code>logout</code>, <code>change</code>, <code>keyChange</code> all dispatch through <code>@mongez/events</code>. Drive UI re-renders, audit logs, side effects.</p>
+</div>
+
+</div>
 
 ## Install
 
 ```sh
-# npm
 npm install @mongez/user
-
-# yarn
-yarn add @mongez/user
-
-# pnpm
-pnpm add @mongez/user
+# or: yarn add @mongez/user
+# or: pnpm add @mongez/user
 ```
 
-`@mongez/events` and `@mongez/reinforcements` install automatically as runtime deps. No peers to wire.
+`@mongez/events` and `@mongez/reinforcements` install automatically. No peers to wire.
 
-## Quick example
-
-Subclass `User`, plug in a cache driver, then read / write the session through bound methods:
+## Quick peek
 
 ```ts
 import { User as BaseUser, UserCacheDriverInterface } from "@mongez/user";
@@ -47,42 +64,19 @@ user.isLoggedIn();                                  // true
 user.can("posts.create");                           // dot-notation permission check
 ```
 
-## Import pattern
-
-```ts
-import {
-  User,
-  UserEventsListener,
-  setCurrentUser,
-  getCurrentUser,
-  type UserInterface,
-  type UserInfo,
-  type UserCacheDriverInterface,
-  type UserEvents,
-} from "@mongez/user";
-```
+Subclass `User`, plug in a cache driver, then read/write the session through bound methods.
 
 ## Mental model
 
-| Concept | Type | Mental model |
-|---|---|---|
-| User | `User` (subclassed) | A typed user payload + bound methods. One instance per app, typically. |
-| Cache driver | `UserCacheDriverInterface` | Three methods (`get`/`set`/`remove`) — anything that persists data. |
-| Events | `UserEventsListener` on `user.events` | Optional pub/sub for `boot`/`login`/`logout`/`change`/`keyChange`. |
-| Current user | module global | `setCurrentUser` / `getCurrentUser` — a single shared slot. |
-| Permissions | plain object on the instance | Replaced via `setPermissions`, queried via `can(dot.path)`. |
+| Concept | What it is |
+|---|---|
+| User | A typed user payload + bound methods. One instance per app, typically. |
+| Cache driver | Three methods (`get` / `set` / `remove`) — anything that persists data. |
+| Events | Optional pub/sub for `boot` / `login` / `logout` / `change` / `keyChange`. |
+| Current user | Module global — `setCurrentUser` / `getCurrentUser`. Single shared slot. |
+| Permissions | Plain object on the instance. Replaced via `setPermissions`, queried via `can(dot.path)`. |
 
-## Scope boundaries
-
-| Concern | Lives in | Why |
-|---|---|---|
-| Login UI / forms / network calls | Your app | This library only manages state, not transport. |
-| Storage primitive (cookies, localStorage, IDB) | The cache driver you supply | Keeps the package storage-agnostic. |
-| App-wide reactive state | `@mongez/atom` | A different abstraction (atoms). Compose if you need both. |
-| Event bus | `@mongez/events` | Shared dependency; events are dispatched there. |
-| Object/string utilities | `@mongez/reinforcements` | `get` / `set` for dot-notation. Used internally. |
-
-## The class hierarchy
+## Class hierarchy
 
 ```
 UserInterface  (type contract)
@@ -94,4 +88,23 @@ UserInterface  (type contract)
   AppUser     (your subclass — declares cacheDriver and any overrides)
 ```
 
-`UserEventsListener` is a separate class instantiated on `user.events` during `boot()` when events are enabled. It implements the `UserEvents` type and dispatches through `@mongez/events`.
+`UserEventsListener` is a separate class instantiated on `user.events` during `boot()` when events are enabled.
+
+## Scope boundaries
+
+| Concern | Lives in | Why |
+|---|---|---|
+| Login UI / forms / network calls | Your app | This library manages state, not transport |
+| Storage primitive (cookies, localStorage, IDB) | The cache driver you supply | Keeps the package storage-agnostic |
+| App-wide reactive state | [`@mongez/atom`](/atom/overview/) | A different abstraction. Compose if you need both |
+| Event bus | [`@mongez/events`](/events/overview/) | Shared dep; events dispatched there |
+| Object/string utilities | [`@mongez/reinforcements`](/reinforcements/overview/) | Used internally for dot-notation |
+
+## Where to go next
+
+- **[Current user](../current-user/)** — `setCurrentUser`, `getCurrentUser`, module-level pointer
+- **[User manager](../user-manager/)** — subclassing `User`, `boot`, `login`, `logout`
+- **[Permissions](../permissions/)** — `setPermissions`, `can`, dot-notation queries
+- **[Cache drivers](../cache-drivers/)** — implementing `UserCacheDriverInterface`
+- **[Events](../events/)** — `UserEventsListener`, the five lifecycle hooks
+- **[Recipes](../recipes/)** — common patterns (token refresh, role gating)

@@ -264,7 +264,7 @@ export default class User implements UserInterface {
    * @returns {boolean}
    */
   public can(permission: string) {
-    return Boolean(get(this.permissions, permission)) === true;
+    return get(this.permissions, permission, false) === true;
   }
 
   /**

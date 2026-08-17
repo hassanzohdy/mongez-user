@@ -2,8 +2,6 @@
 name: mongez-user-permissions
 description: |
   How to store, check, and persist user permissions using `setPermissions()` and `can()` with dot-notation paths.
-  TRIGGER when: code calls `user.setPermissions(...)`, `user.can("...")`, or imports `Role`, `PermissionGroup` types from `@mongez/user`; user asks "how do I check permissions / gate features by role / store user permissions / wire RBAC with @mongez/user"; file does permission checks against a `User` subclass instance.
-  SKIP: CASL, Casbin, or other dedicated authorization libraries; backend policy/middleware authz unrelated to the client-side `User` class; generic feature flagging (LaunchDarkly, Unleash); roles stored entirely in the JWT without `setPermissions`.
 ---
 
 # Permissions
@@ -14,10 +12,13 @@ description: |
 
 ```ts
 user.setPermissions(obj);   // replaces the permissions object
-user.can(path);             // boolean — truthy value at the path
+user.can(path);             // boolean — exactly `true` at the path
 ```
 
-Returns `true` only when `get(permissions, path)` produces a truthy value (`true`, `1`, `"yes"`, a non-empty array, …). Any falsy value or a missing key returns `false`.
+Returns `true` only when `get(permissions, path)` is the boolean `true`. Anything else — a
+missing key, a falsy value, or a truthy non-boolean (`1`, `"yes"`, `"editor"`, a non-empty
+array or object) — returns `false`. The check fails closed on purpose: an authorization
+decision that guesses grants access silently.
 
 ## Shape examples
 
@@ -49,17 +50,23 @@ user.can("posts.create");   // true
 user.can("admin.panel");    // true
 ```
 
-### Role names → truthy strings
+### Role names → strings are NOT grants
+
+`can()` fails closed: it grants only on an exact boolean `true`. A role string is not a grant.
 
 ```ts
 user.setPermissions({
   posts: { create: "editor", delete: "admin" },
 });
 
-user.can("posts.create");   // true ("editor" is truthy)
+user.can("posts.create");   // false — "editor" is truthy but not `true`
 ```
 
-This works but `can()` only tells you "yes/no" — it doesn't expose the role string. Read it directly via the underlying object if you need it:
+The same holds for `1`, `"true"`, and nested objects: `can("posts")` on
+`{ posts: { create: false } }` is `false`, not `true`. If your API sends `1`/`0` or role
+strings, normalize them to booleans before `setPermissions`.
+
+If you need the role string, read it directly via the underlying object:
 
 ```ts
 import { get } from "@mongez/reinforcements";

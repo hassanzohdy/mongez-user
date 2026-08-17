@@ -329,22 +329,26 @@ describe("permissions", () => {
     expect(u.can("unrelated.key")).toBe(false);
   });
 
-  it("can() returns true for any truthy leaf, false for any falsy leaf", () => {
+  it("can() only grants access for an explicit boolean true leaf, fails closed otherwise", () => {
     const u = make();
     u.boot();
     u.setPermissions({
+      explicitTrue: true,
       truthyString: "yes",
       truthyNumber: 1,
       truthyArray: [1],
+      truthyObject: {},
       falsyString: "",
       falsyNumber: 0,
       falsyNull: null,
       falsyUndefined: undefined,
       explicitFalse: false,
     });
-    expect(u.can("truthyString")).toBe(true);
-    expect(u.can("truthyNumber")).toBe(true);
-    expect(u.can("truthyArray")).toBe(true);
+    expect(u.can("explicitTrue")).toBe(true);
+    expect(u.can("truthyString")).toBe(false);
+    expect(u.can("truthyNumber")).toBe(false);
+    expect(u.can("truthyArray")).toBe(false);
+    expect(u.can("truthyObject")).toBe(false);
     expect(u.can("falsyString")).toBe(false);
     expect(u.can("falsyNumber")).toBe(false);
     expect(u.can("falsyNull")).toBe(false);

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.1] — 2026-09-25
+
+### Changed
+- Added a grouped Agent Kit skills index for topic-based discovery.
+
 ## [1.2.0] — 2026-08-17
 
 Security release with a **behaviour change to `can()`**. Read the item below before upgrading — permission checks that used to pass may now fail, and that is the point.

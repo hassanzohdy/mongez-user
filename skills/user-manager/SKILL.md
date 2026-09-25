@@ -136,7 +136,7 @@ user.refreshToken("new");           // alias for setAccessToken
 
 ## Permissions
 
-See [`permissions.md`](./permissions.md) for the full pattern.
+See [Permissions](../permissions/SKILL.md) for the full pattern.
 
 ```ts
 user.setPermissions({ posts: { create: true } });
